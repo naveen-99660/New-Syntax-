@@ -1,0 +1,30 @@
+**** in LT_ERROR table updating the mesg where the mesg is initial.
+*Assign the general error message to all items that don't have msg(i.e.space)
+            lt_error_temp  = VALUE #( FOR wa IN lt_error
+                                  ( ebeln = wa-ebeln
+                                    ebelp = wa-ebelp
+                                    msg = COND #( WHEN wa-msg = ' '
+                                             THEN 'Update failed due to errors in other items'(074)
+                                             ELSE wa-msg ) ) ).
+**************************
+*Updating lt_error with msg-'Hello' to all line items
+                lt_error_temp = VALUE #( FOR wa IN lt_error
+                                      ( ebeln = wa-ebeln
+                                        ebelp = wa-ebelp
+                                        msg = 'Hello'
+                                        ) )  .
+**************************
+*To calculatet the number of records in lt_po_data where icon  = '@08@
+lv_success = REDUCE i( INIT count = 0
+                      FOR wa IN lt_po_data
+                      WHERE ( icon = '@08@' )
+                      NEXT count = count + 1 ).
+*************************
+* Assign the value to dynamic column 
+  DATA: lv_fieldname TYPE string.
+  FIELD-SYMBOLS <fs_field> TYPE any.
+ lv_fieldname = ls_cls_char1-char_name. " Pass the characteristic name(It's a column name)
+                ASSIGN COMPONENT lv_fieldname OF STRUCTURE lw_classification TO <fs_field>.
+                IF sy-subrc = 0.
+                  <fs_field> = ls_allocvalueschar-value_neutral. "Characterstic value 
+***************************
