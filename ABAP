@@ -28,3 +28,12 @@ lv_success = REDUCE i( INIT count = 0
                 IF sy-subrc = 0.
                   <fs_field> = ls_allocvalueschar-value_neutral. "Characterstic value 
 ***************************
+* Check if there is split for given line item then we need to execute below loop only when Screen 4001
+* 4001 is called whenever you delete, change or Insert a record and when Screen 4001(superscreen) is called
+* XVBAP is updated properly.
+      DATA(lv_checkstake) = COND #( WHEN gi_vbap_osl_n-kwmeng <>
+                                         VALUE #( yvbap[ posnr = gi_vbap_osl_n-posnr matnr = vbap-matnr  ]-kwmeng OPTIONAL )
+                                    THEN abap_true
+                                    ELSE abap_false ).
+***************************
+
